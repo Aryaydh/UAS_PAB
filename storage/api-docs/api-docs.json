@@ -1,0 +1,419 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Economic Data API",
+        "description": "API for retrieving economic indicators from FRED",
+        "contact": {
+            "email": "admin@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/custom-report/available-indicators": {
+            "get": {
+                "tags": [
+                    "Custom Report"
+                ],
+                "summary": "Get available indicators",
+                "description": "Retrieve list of all available indicators for custom reports",
+                "operationId": "beb5563f14eb6ae0c07e9e3f2ac5fe1e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Available indicators retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "indicators": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "mapping": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/custom-report": {
+            "post": {
+                "tags": [
+                    "Custom Report"
+                ],
+                "summary": "Generate custom report",
+                "description": "Generate a custom report with selected indicators and date range",
+                "operationId": "c2d03838ffd7e4735e7a5f3d6d2c5d23",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "indicators",
+                                    "start_date",
+                                    "end_date"
+                                ],
+                                "properties": {
+                                    "indicators": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "gdp",
+                                            "inflation",
+                                            "sp500"
+                                        ]
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-01"
+                                    },
+                                    "end_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-12-31"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Custom report generated successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/economic-indicators": {
+            "get": {
+                "tags": [
+                    "Economic Indicators"
+                ],
+                "summary": "Get economic indicators",
+                "description": "Retrieve latest economic indicators including GDP, Inflation, Unemployment, and Consumer Confidence",
+                "operationId": "d8e52173c5de76d510bdaf9d94124288",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Economic indicators retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "Economic Indicators"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "indicator": {
+                                                                "type": "string",
+                                                                "example": "Gdp"
+                                                            },
+                                                            "value": {
+                                                                "type": "number",
+                                                                "example": 30485.729
+                                                            },
+                                                            "unit": {
+                                                                "type": "string",
+                                                                "example": "Billions of Dollars"
+                                                            },
+                                                            "date": {
+                                                                "type": "string",
+                                                                "format": "date"
+                                                            },
+                                                            "series_id": {
+                                                                "type": "string",
+                                                                "example": "GDP"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/interest-rates": {
+            "get": {
+                "tags": [
+                    "Interest Rates"
+                ],
+                "summary": "Get interest rates",
+                "description": "Retrieve latest interest rates including Federal Funds Rate, Treasury 10-year, Mortgage 30-year, and Prime Rate",
+                "operationId": "7c52db27cd711dbcb53a7537db8b4b96",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Interest rates retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "Interest Rates"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "indicator": {
+                                                                "type": "string",
+                                                                "example": "Federal Funds Rate"
+                                                            },
+                                                            "value": {
+                                                                "type": "number",
+                                                                "example": 3.88
+                                                            },
+                                                            "unit": {
+                                                                "type": "string",
+                                                                "example": "Percent"
+                                                            },
+                                                            "date": {
+                                                                "type": "string",
+                                                                "format": "date"
+                                                            },
+                                                            "series_id": {
+                                                                "type": "string",
+                                                                "example": "FEDFUNDS"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/api/market-indicators": {
+            "get": {
+                "tags": [
+                    "Market Indicators"
+                ],
+                "summary": "Get market indicators",
+                "description": "Retrieve latest market indicators including S&P 500, Dollar Index, and Oil Price",
+                "operationId": "44e6b7eaa2f59530f8268b9de7e09cf5",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Market indicators retrieved successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "category": {
+                                                    "type": "string",
+                                                    "example": "Market Indicators"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "indicator": {
+                                                                "type": "string",
+                                                                "example": "Sp500"
+                                                            },
+                                                            "value": {
+                                                                "type": "number",
+                                                                "example": 6846.51
+                                                            },
+                                                            "unit": {
+                                                                "type": "string",
+                                                                "example": "Index"
+                                                            },
+                                                            "date": {
+                                                                "type": "string",
+                                                                "format": "date"
+                                                            },
+                                                            "series_id": {
+                                                                "type": "string",
+                                                                "example": "SP500"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "passport": {
+                "type": "oauth2",
+                "flows": {
+                    "clientCredentials": {
+                        "tokenUrl": "/oauth/token",
+                        "scopes": {}
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Custom Report",
+            "description": "Custom Report"
+        },
+        {
+            "name": "Economic Indicators",
+            "description": "Economic Indicators"
+        },
+        {
+            "name": "Interest Rates",
+            "description": "Interest Rates"
+        },
+        {
+            "name": "Market Indicators",
+            "description": "Market Indicators"
+        }
+    ]
+}

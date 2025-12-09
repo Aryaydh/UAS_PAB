@@ -8,10 +8,9 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomReportController extends Controller
 {
-    private $apiKey;
-    private $baseUrl = 'https://api.stlouisfed.org/fred/series/observations';
+    private $fredApiKey;
+    private $fredBaseUrl = 'https://api.stlouisfed.org/fred';
 
-    // Mapping nama indicator ke series ID FRED
     private $indicatorMapping = [
         'gdp' => 'GDP',
         'inflation' => 'CPIAUCSL',
@@ -29,93 +28,39 @@ class CustomReportController extends Controller
 
     public function __construct()
     {
-        $this->apiKey = env('FRED_API_KEY');
+        $this->fredApiKey = config('services.fred.api_key');
     }
 
-    public function generate(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'indicators' => 'required|array|min:1',
-            'indicators.*' => 'string',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $requestedIndicators = array_map('strtolower', $request->indicators);
-        $validIndicators = [];
-        $results = [];
-
-        // Convert indicator names or series IDs to FRED series IDs
-        foreach ($requestedIndicators as $indicator) {
-            // Check if it's a valid indicator name
-            if (isset($this->indicatorMapping[$indicator])) {
-                $seriesId = $this->indicatorMapping[$indicator];
-                $validIndicators[] = $indicator;
-            }
-            // Check if it's already a series ID
-            elseif (in_array(strtoupper($indicator), $this->indicatorMapping)) {
-                $seriesId = strtoupper($indicator);
-                $indicatorName = array_search($seriesId, $this->indicatorMapping);
-                $validIndicators[] = $indicatorName;
-            } else {
-                continue;
-            }
-
-            // Fetch data from FRED
-            $response = Http::get($this->baseUrl, [
-                'series_id' => $seriesId,
-                'api_key' => $this->apiKey,
-                'file_type' => 'json',
-                'observation_start' => $request->start_date,
-                'observation_end' => $request->end_date,
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $observations = $data['observations'] ?? [];
-
-                $results[$indicator] = [
-                    'series_id' => $seriesId,
-                    'data' => array_map(function ($obs) {
-                        return [
-                            'date' => $obs['date'],
-                            'value' => $obs['value'] !== '.' ? (float)$obs['value'] : null,
-                        ];
-                    }, $observations)
-                ];
-            }
-        }
-
-        if (empty($validIndicators)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No valid indicators found',
-                'available_indicators' => array_keys($this->indicatorMapping)
-            ], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Custom report generated successfully',
-            'data' => [
-                'report_period' => [
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                ],
-                'indicators' => $results,
-                'timestamp' => now()->toIso8601String(),
-            ]
-        ]);
-    }
-
+    /**
+     * @OA\Get(
+     *     path="/api/custom-report/available-indicators",
+     *     summary="Get available indicators",
+     *     description="Retrieve list of all available indicators for custom reports",
+     *     tags={"Custom Report"},
+     *     security={{"passport": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Available indicators retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="indicators",
+     *                     type="array",
+     *                     @OA\Items(type="string")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="mapping",
+     *                     type="object"
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function availableIndicators()
     {
         return response()->json([
@@ -124,7 +69,122 @@ class CustomReportController extends Controller
             'data' => [
                 'indicators' => array_keys($this->indicatorMapping),
                 'mapping' => $this->indicatorMapping,
-            ]
+            ],
         ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/custom-report",
+     *     summary="Generate custom report",
+     *     description="Generate a custom report with selected indicators and date range",
+     *     tags={"Custom Report"},
+     *     security={{"passport": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"indicators", "start_date", "end_date"},
+     *             @OA\Property(
+     *                 property="indicators",
+     *                 type="array",
+     *                 @OA\Items(type="string"),
+     *                 example={"gdp", "inflation", "sp500"}
+     *             ),
+     *             @OA\Property(property="start_date", type="string", format="date", example="2024-01-01"),
+     *             @OA\Property(property="end_date", type="string", format="date", example="2025-12-31")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Custom report generated successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
+    public function generate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'indicators' => 'required|array|min:1',
+            'indicators.*' => 'string|in:' . implode(',', array_keys($this->indicatorMapping)),
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $indicators = $request->input('indicators');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $reportData = [];
+
+        foreach ($indicators as $indicator) {
+            $seriesId = $this->indicatorMapping[$indicator];
+            $observations = $this->getObservations($seriesId, $startDate, $endDate);
+
+            $reportData[$indicator] = [
+                'series_id' => $seriesId,
+                'data' => $observations,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Custom report generated successfully',
+            'data' => [
+                'report_period' => [
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                ],
+                'indicators' => $reportData,
+                'timestamp' => now()->toIso8601String(),
+            ],
+        ]);
+    }
+
+    private function getObservations($seriesId, $startDate, $endDate)
+    {
+        try {
+            $response = Http::get("{$this->fredBaseUrl}/series/observations", [
+                'series_id' => $seriesId,
+                'api_key' => $this->fredApiKey,
+                'file_type' => 'json',
+                'observation_start' => $startDate,
+                'observation_end' => $endDate,
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (!empty($data['observations'])) {
+                    return array_map(function ($obs) {
+                        return [
+                            'date' => $obs['date'],
+                            'value' => $obs['value'] !== '.' ? (float) $obs['value'] : null,
+                        ];
+                    }, $data['observations']);
+                }
+            }
+
+            return [];
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 }
