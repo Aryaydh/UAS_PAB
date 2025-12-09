@@ -1,0 +1,38 @@
+## 📂 Struktur Project
+
+
+economic-data-api/
+│
+├── app/Http/
+│ ├── Controllers/
+│ │ ├── EconomicIndicatorController.php
+│ │ ├── InterestRateController.php
+│ │ ├── MarketIndicatorController.php
+│ │ └── CustomReportController.php
+│ │
+│ └── Middleware/
+│ └── CheckClientToken.php
+│
+├── config/
+│ ├── auth.php
+│ ├── services.php
+│ └── l5-swagger.php
+│
+├── routes/
+│ └── api.php
+│
+├── storage/api-docs/
+│ └── api-docs.json
+│
+├── README.md
+└── DOCUMENTATION.md
+
+
+### Penjelasan File Penting
+
+| Path | Deskripsi |
+|------|-----------|
+| `app/Http/Controllers/` | 4 controller utama untuk API endpoints |
+| `app/Http/Middleware/CheckClientToken.php` | Custom middleware validasi OAuth2 token |
+| `config/services.php` | Konfigurasi FRED API key |
+| `routes/api.php` | Definisi semua API routes |

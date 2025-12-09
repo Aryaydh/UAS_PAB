@@ -196,38 +196,38 @@ curl -X POST http://localhost:8000/api/custom-report
 | Database     | MySQL                                |
 | Cache        | Laravel Cache (File/Redis)           |
 | PHP Version  | 8.2+                                 |
+
 ## 📂 Struktur Project
 
 ### File dan Folder Penting
 
-| Lokasi | File/Folder | Deskripsi |
-|--------|-------------|-----------|
-| **Controllers** | | |
+| Lokasi                  | File/Folder                       | Deskripsi                                                      |
+| ----------------------- | --------------------------------- | -------------------------------------------------------------- |
+| **Controllers**         |                                   |                                                                |
 | `app/Http/Controllers/` | `EconomicIndicatorController.php` | Handler untuk endpoint indikator ekonomi (GDP, Inflation, dll) |
-| `app/Http/Controllers/` | `InterestRateController.php` | Handler untuk endpoint suku bunga |
-| `app/Http/Controllers/` | `MarketIndicatorController.php` | Handler untuk endpoint indikator pasar |
-| `app/Http/Controllers/` | `CustomReportController.php` | Handler untuk endpoint custom report |
-| **Middleware** | | |
-| `app/Http/Middleware/` | `CheckClientToken.php` | Custom middleware validasi OAuth2 token |
-| **Config** | | |
-| `config/` | `auth.php` | Konfigurasi autentikasi Passport |
-| `config/` | `services.php` | Konfigurasi FRED API key |
-| `config/` | `l5-swagger.php` | Konfigurasi dokumentasi Swagger |
-| **Routes** | | |
-| `routes/` | `api.php` | Definisi semua API endpoints |
-| **Documentation** | | |
-| `storage/api-docs/` | `api-docs.json` | File Swagger documentation |
-| Root | `README.md` | Dokumentasi utama project |
-| Root | `DOCUMENTATION.md` | Flow diagram dan arsitektur sistem |
+| `app/Http/Controllers/` | `InterestRateController.php`      | Handler untuk endpoint suku bunga                              |
+| `app/Http/Controllers/` | `MarketIndicatorController.php`   | Handler untuk endpoint indikator pasar                         |
+| `app/Http/Controllers/` | `CustomReportController.php`      | Handler untuk endpoint custom report                           |
+| **Middleware**          |                                   |                                                                |
+| `app/Http/Middleware/`  | `CheckClientToken.php`            | Custom middleware validasi OAuth2 token                        |
+| **Config**              |                                   |                                                                |
+| `config/`               | `auth.php`                        | Konfigurasi autentikasi Passport                               |
+| `config/`               | `services.php`                    | Konfigurasi FRED API key                                       |
+| `config/`               | `l5-swagger.php`                  | Konfigurasi dokumentasi Swagger                                |
+| **Routes**              |                                   |                                                                |
+| `routes/`               | `api.php`                         | Definisi semua API endpoints                                   |
+| **Documentation**       |                                   |                                                                |
+| `storage/api-docs/`     | `api-docs.json`                   | File Swagger documentation                                     |
+| Root                    | `README.md`                       | Dokumentasi utama project                                      |
+| Root                    | `DOCUMENTATION.md`                | Flow diagram dan arsitektur sistem                             |
 
 ### Struktur Folder Utama
 
-- **app/Http/Controllers/** - Berisi 4 controller untuk API endpoints
-- **app/Http/Middleware/** - Custom middleware untuk autentikasi
-- **config/** - File konfigurasi (auth, services, swagger)
-- **routes/** - Route definitions
-- **storage/api-docs/** - Swagger documentation files
-
+-   **app/Http/Controllers/** - Berisi 4 controller untuk API endpoints
+-   **app/Http/Middleware/** - Custom middleware untuk autentikasi
+-   **config/** - File konfigurasi (auth, services, swagger)
+-   **routes/** - Route definitions
+-   **storage/api-docs/** - Swagger documentation files
 
 ### Penjelasan Struktur
 
@@ -243,7 +243,7 @@ curl -X POST http://localhost:8000/api/custom-report
 
 ## 👥 Tim Pengembang
 
-| No  | Nama               | NIM      |
+| No  | Nama               | Role      |
 | --- | ------------------ | --------- |
 | 1   | Arya Yudha Bathara | Developer |
 | 2   | Nama Anggota 2     | Developer |
