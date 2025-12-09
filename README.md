@@ -239,7 +239,7 @@ economic-data-api/
 
 ## 👥 Tim Pengembang
 
-| No  | Nama               | Role      |
+| No  | Nama               | NIM      |
 | --- | ------------------ | --------- |
 | 1   | Arya Yudha Bathara | Developer |
 | 2   | Nama Anggota 2     | Developer |
