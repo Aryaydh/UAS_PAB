@@ -243,12 +243,11 @@ curl -X POST http://localhost:8000/api/custom-report
 
 ## 👥 Tim Pengembang
 
-| No  | Nama               | Role      |
+| No  | Nama               | NIM     |
 | --- | ------------------ | --------- |
-| 1   | Arya Yudha Bathara | Developer |
-| 2   | Nama Anggota 2     | Developer |
-| 3   | Nama Anggota 3     | Developer |
-| 4   | Nama Anggota 4     | Developer |
+| 1   | Arya Yudha Bathara | G.111.23.0026 |
+| 2   | Khasniatus Zakia           | G.111.23.0002 |
+| 3   | Syanissa Luthfi Hidayati   | G.111.23.0037 |
 
 ## 📝 Lisensi
 
