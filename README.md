@@ -199,6 +199,34 @@ curl -X POST http://localhost:8000/api/custom-report
 
 ## 📂 Struktur Project
 
+## 📂 Struktur Project
+
+```
+economic-data-api/
+│
+├── app/Http/
+│   ├── Controllers/
+│   │   ├── EconomicIndicatorController.php
+│   │   ├── InterestRateController.php
+│   │   ├── MarketIndicatorController.php
+│   │   └── CustomReportController.php
+│   └── Middleware/
+│       └── CheckClientToken.php
+│
+├── config/
+│   ├── auth.php
+│   ├── services.php
+│   └── l5-swagger.php
+│
+├── routes/
+│   └── api.php
+│
+├── storage/api-docs/
+│   └── api-docs.json
+│
+├── README.md
+└── DOCUMENTATION.md
+```
 ### File dan Folder Penting
 
 | Lokasi                  | File/Folder                       | Deskripsi                                                      |
@@ -240,15 +268,3 @@ curl -X POST http://localhost:8000/api/custom-report
 | `config/l5-swagger.php`                    | Konfigurasi dokumentasi Swagger               |
 | `routes/api.php`                           | Definisi semua API routes                     |
 | `storage/api-docs/api-docs.json`           | File Swagger documentation yang ter-generate  |
-
-## 👥 Tim Pengembang
-
-| No  | Nama               | NIM     |
-| --- | ------------------ | --------- |
-| 1   | Arya Yudha Bathara | G.111.23.0026 |
-| 2   | Khasniatus Zakia           | G.111.23.0002 |
-| 3   | Syanissa Luthfi Hidayati   | G.111.23.0037 |
-
-## 📝 Lisensi
-
-Proyek ini dibuat untuk keperluan pendidikan dalam rangka UAS mata kuliah **Pengembangan Aplikasi Bisnis**.
